@@ -1,6 +1,13 @@
 NEOTOKYO Dedicated Server Installer
 ===================================
 
+Installation Script for easy deploying an NEOTOKYO Dedicated Server on Windows.
+
+NEOTOKYO is a multiplayer first person shooter that provides a visceral & realistic
+combat experience in a rich futuristic setting.
+
+Windows Command Prompt Version, for the installation run `install.cmd`.
+
 Requirements
 ------------
 * 64-Bit Operating System (Windows 7/8/8.1/10, Windows Server 2008/2008 R2/2012/2012 R2/2016)
