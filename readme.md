@@ -37,7 +37,7 @@ If you are not in the same Windows DOMAIN as your server, ensure that the server
 	C:\> winrm get winrm/config/client
 	C:\> winrm set winrm/config/client '@{TrustedHosts="fqdn"}'
 
-# Usage
+## Usage
 
 For Installation run the `install.cmd` script.
 
