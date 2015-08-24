@@ -98,6 +98,34 @@ Please be patient after you selected installing `3. NEOTOKYO Dedicated Server`, 
 
 	Select number & press enter:
 
+## Controlling the Server
+
+Enter a remote PowerShell session:
+
+	Enter-PSSession -ComputerName <fqdn> -Credential $credential
+
+Get the service status:
+
+	Get-Service neotokyo
+
+Start the service:
+
+	Set-Service neotokyo -Status Running
+
+Edit the server.cfg with the PowerShell ISE.
+
+1. Open PowerShell ISE
+
+	`powershell_ise`
+
+2. Enter a remote session:
+
+	`Enter-PSSession -ComputerName <fqdn> -Credential $credential`
+
+3. Edit the server.cfg file with:
+
+	`PSEdit 'C:\Program Files (x86)\SteamCMD\steamapps\common\NEOTOKYO Dedicated Server\NeotokyoSource\cfg\server.cfg'`
+
 ## License Information
 
 NSSM is public domain. You may unconditionally use it and/or its source code for any purpose you wish.
