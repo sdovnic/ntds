@@ -14,9 +14,6 @@ NEOTOKYO is a multiplayer first person shooter that provides a visceral & realis
 
 ## Supported 64-Bit Operating Systems
 
-* Windows 7 Service Pack 1
-* Windows Server 2008 R2 Service Pack 1
-* Windows Server 2008 Service Pack 2
 * Windows 8
 * Windows 8.1
 * Windows 10
