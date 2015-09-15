@@ -39,20 +39,22 @@ If you are not in the same Windows DOMAIN as your server, ensure that the server
 
 For Installation run the `install.cmd` script.
 
-Please be patient after you selected installing `3. NEOTOKYO Dedicated Server`, depending on your internet connection it may take a while.
+Please be patient after you selected installing `3. NEOTOKYO Dedicated Server`, depending on your internet connection it may *take a while*.
 
 	-- NEOTOKYO Dedicated Server Installer --
 
 	1. Remote Installation
 	2. Local Installation
 
+	To exit just press enter.
+
 	Select number & press enter: 1
 
-	Please enter the full qualified domain name of your remote host:
+	Please enter the full qualified domain name of your remote host: win-qwertzuiopa
 
-	Cmdlet Get-Credential an der Befehlspipelineposition 1
-	Geben Sie Werte für die folgenden Parameter an:
-	Credential
+	Copying nssm.exe (64-Bit) to C:\Users\Administrator\AppData\Local\Temp on win-qwertzuiopa
+
+	Copying steamcmd.exe to C:\Users\Administrator\AppData\Local\Temp on win-qwertzuiopa
 
 	Starting remote installation ...
 
@@ -62,16 +64,21 @@ Please be patient after you selected installing `3. NEOTOKYO Dedicated Server`, 
 	2. NSSM - the Non-Sucking Service Manager
 	3. NEOTOKYO Dedicated Server
 
-	Select number & press enter: 1
+	9. Remove Installation
 
-	Installing the file steamcmd.exe ...
-	The firewall rule for SteamCMD is present.
-
-	1. SteamCMD - Steam Console Client
-	2. NSSM - the Non-Sucking Service Manager
-	3. NEOTOKYO Dedicated Server
+	To exit just press enter.
 
 	Select number & press enter: 2
+
+	Creating the directory C:\Program Files\NSSM ...
+
+
+	    Verzeichnis: C:\Program Files
+
+
+	Mode                LastWriteTime         Length Name            PSComputerName
+	----                -------------         ------ ----            --------------
+	d----        15.09.2015     06:19                NSSM            win-qwertzuiop
 
 	Installing the file nssm.exe ...
 
@@ -79,22 +86,54 @@ Please be patient after you selected installing `3. NEOTOKYO Dedicated Server`, 
 	2. NSSM - the Non-Sucking Service Manager
 	3. NEOTOKYO Dedicated Server
 
-	Select number & press enter: 3
+	9. Remove Installation
 
-	Installing NEOTOKYO Dedicated Server ...
-	Installing service for NEOTOKYO Dedicated Server ...
-	The firewall rules for NEOTOKYO Dedicated Server are present.
+	To exit just press enter.
+
+	Select number & press enter: 1
+
+	Creating the directory C:\Program Files (x86)\SteamCMD ...
+	d----        15.09.2015     06:19                SteamCMD        win-qwertzuiop
+
+	Installing the file steamcmd.exe ...
+	Adding firewall rule for SteamCMD ...
 
 	1. SteamCMD - Steam Console Client
 	2. NSSM - the Non-Sucking Service Manager
 	3. NEOTOKYO Dedicated Server
 
-	Select number & press enter:
+	9. Remove Installation
 
-	1. Remote Installation
-	2. Local Installation
+	To exit just press enter.
 
-	Select number & press enter:
+	Select number & press enter: 1
+
+	SteamCMD already installed.
+	The firewall rule for SteamCMD is present.
+
+	1. SteamCMD - Steam Console Client
+	2. NSSM - the Non-Sucking Service Manager
+	3. NEOTOKYO Dedicated Server
+
+	9. Remove Installation
+
+	To exit just press enter.
+
+	Select number & press enter: 2
+
+	NSSM already installed.
+
+	1. SteamCMD - Steam Console Client
+	2. NSSM - the Non-Sucking Service Manager
+	3. NEOTOKYO Dedicated Server
+
+	9. Remove Installation
+
+	To exit just press enter.
+
+	Select number & press enter: 3
+
+	Installing NEOTOKYO Dedicated Server ...
 
 ## Controlling the Server
 
@@ -123,6 +162,12 @@ Edit the server.cfg with the PowerShell ISE.
 3. Edit the server.cfg file with:
 
 	`PSEdit 'C:\Program Files (x86)\SteamCMD\steamapps\common\NEOTOKYO Dedicated Server\NeotokyoSource\cfg\server.cfg'`
+
+## Enable WinRM on a Windows Desktop
+
+If you want to install on a remote Windows Desktop you can enable WinRM with the following Command:
+
+	C:\Users\Administrator> winrm quickconfig
 
 ## License Information
 

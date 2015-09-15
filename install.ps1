@@ -56,7 +56,7 @@ Copying", $nssm.filename, "($Architecture) to", $env:TEMP, "on", $remotehost
                        [IO.File]::WriteAllBytes((Join-Path -Path $env:TEMP -ChildPath $using:nssm.filename), $using:contents)
                    }
     Write-Host "
-Copying", $steamcmd.filename, "($Architecture) to", $env:TEMP, "on", $remotehost
+Copying", $steamcmd.filename, "to", $env:TEMP, "on", $remotehost
     $contents = [IO.File]::ReadAllBytes($steamcmd.filename)
     Invoke-Command -ComputerName $remotehost -Credential $credential `
                    -ScriptBlock {
