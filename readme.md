@@ -6,14 +6,15 @@ NEOTOKYO is a multiplayer first person shooter that provides a visceral & realis
 
 ## Requirements
 
-* 64-Bit Windows Operating System
-* [PowerShell](https://www.microsoft.com/en-us/download/details.aspx?id=34595) 3.0
+* Windows Operating System
+* [PowerShell](https://www.microsoft.com/en-us/download/details.aspx?id=34595) 3.0 (Needed only for the Client if you do a Remote Installation)
 * Elevated Command Prompt
 * [SteamCMD](https://developer.valvesoftware.com/wiki/SteamCMD) - Steam Console Client (steamcmd.exe)
 * [NSSM](http://www.nssm.cc) - the Non-Sucking Service Manager (nssm.exe)
 
-## Supported 64-Bit Operating Systems
+## Supported Operating Systems
 
+* Windows 7
 * Windows 8
 * Windows 8.1
 * Windows 10
