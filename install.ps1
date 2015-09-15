@@ -1,3 +1,4 @@
+Set-PSDebug -Strict
 Write-Host "-- NEOTOKYO Dedicated Server Installer --"
 [String] $Architecture = (Get-WmiObject Win32_OperatingSystem -ComputerName $env:COMPUTERNAME).OSArchitecture
 $steamcmd = @{}
@@ -18,15 +19,13 @@ To exit just press enter.
     }
 }
 Function remote {
+    Write-Host ""
     If ($PSVersionTable.PSVersion.Major -lt 3) {
         Write-Host "Your Client needs a PowerShell Version greater than 2.0 for Remote Installation!"
         Break
     }
     $remotehost = Read-Host -Prompt "Please enter the full qualified domain name of your remote host"
-    $credential = Get-Credential
-    Write-Host "
-Starting remote installation ...
-"
+    $credential = Get-Credential -Message $remotehost
     [String] $Architecture = Invoke-Command -ComputerName $remotehost -Credential $credential `
                                             -ScriptBlock {
                                                 (Get-WmiObject Win32_OperatingSystem -ComputerName $env:COMPUTERNAME).OSArchitecture
@@ -48,22 +47,27 @@ Get the File from https://developer.valvesoftware.com/wiki/SteamCMD
 and place it in the current directory."
         Break
     }
+    Write-Host "
+Copying", $nssm.filename, "($Architecture) to", $env:TEMP, "on", $remotehost
     $contents = [IO.File]::ReadAllBytes($nssm.filename)
     Invoke-Command -ComputerName $remotehost -Credential $credential `
                    -ScriptBlock {
                        [IO.File]::WriteAllBytes((Join-Path -Path $env:TEMP -ChildPath $using:nssm.filename), $using:contents)
                    }
+    Write-Host "
+Copying", $steamcmd.filename, "($Architecture) to", $env:TEMP, "on", $remotehost
     $contents = [IO.File]::ReadAllBytes($steamcmd.filename)
     Invoke-Command -ComputerName $remotehost -Credential $credential `
                    -ScriptBlock {
                        [IO.File]::WriteAllBytes((Join-Path -Path $env:TEMP -ChildPath $using:steamcmd.filename), $using:contents)
                    }
-    Invoke-Command -ComputerName $remotehost -Credential $credential -FilePath ".\ntds.ps1"
+    Write-Host "
+Starting remote installation ...
+"
+    Invoke-Command -ComputerName $remotehost -Credential $credential -FilePath (Join-Path -Path $PSScriptRoot -ChildPath "ntds.ps1")
 }
 Function local {
-    Write-Host "
-Starting local installation ...
-"
+    Write-Host ""
     If ($Architecture -notcontains "64-Bit") {
         $nssm['filename'] = 'x86\nssm.exe'
     }
@@ -81,8 +85,15 @@ Get the File from https://developer.valvesoftware.com/wiki/SteamCMD
 and place it in the current directory."
         Break
     }
+    Write-Host "
+Copying", $nssm.filename, "($Architecture) to", $env:TEMP
     Copy-Item -Path $nssm.filename -Destination $env:TEMP
+    Write-Host "
+Copying", $steamcmd.filename, "($Architecture) to", $env:TEMP
     Copy-Item -Path $steamcmd.filename -Destination $env:TEMP
+    Write-Host "
+Starting local installation ...
+"
     Invoke-Expression "powershell -NoProfile -ExecutionPolicy Bypass .\ntds.ps1"
 }
 menu

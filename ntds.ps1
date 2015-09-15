@@ -1,12 +1,13 @@
+Set-PSDebug -Strict
 Write-Host "-- NEOTOKYO Dedicated Server Installer --"
-If ($PSVersionTable.PSVersion.Major -lt 3) {
-    [String] $PSScriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Definition
-}
-If ($PSVersionTable.PSVersion.Major -lt 3) {
-    [String] $PSCommandPath = $MyInvocation.MyCommand.Definition
-}
 If (-not (Test-Path variable:global:PSSenderInfo)) {
-    if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+    If ($PSVersionTable.PSVersion.Major -lt 3) {
+        [String] $PSScriptRoot = Split-Path -Parent $MyInvocation.MyCommand.Definition
+    }
+    If ($PSVersionTable.PSVersion.Major -lt 3) {
+        [String] $PSCommandPath = $MyInvocation.MyCommand.Definition
+    }
+    If (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
         Start-Process powershell -WorkingDirectory $PSScriptRoot -Verb runAs `
                                  -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File $PSCommandPath $args"
         return
