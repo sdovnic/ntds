@@ -16,14 +16,14 @@ If (-not (Test-Path variable:global:PSSenderInfo)) {
 [String] $Architecture = (Get-WmiObject Win32_OperatingSystem -ComputerName $env:COMPUTERNAME).OSArchitecture
 $steamcmd = @{}
 $steamcmd['filename'] = 'steamcmd.exe'
-$steamcmd['directory'] = Join-Path -Path ${env:ProgramFiles(x86)} -ChildPath 'SteamCMD'
+If ($Architecture -notcontains "64-Bit") {
+    $steamcmd['directory'] = Join-Path -Path ${env:ProgramFiles} -ChildPath 'SteamCMD'
+} Else {
+    $steamcmd['directory'] = Join-Path -Path ${env:ProgramFiles(x86)} -ChildPath 'SteamCMD'
+}
 $nssm = @{}
 $nssm['filename'] = 'nssm.exe'
-If ($Architecture -notcontains "64-Bit") {
-    $nssm['directory'] = Join-Path -Path ${env:ProgramFiles(x86)} -ChildPath 'NSSM'
-} Else {
-    $nssm['directory'] = Join-Path -Path ${env:ProgramFiles} -ChildPath 'NSSM'
-}
+$nssm['directory'] = Join-Path -Path ${env:ProgramFiles} -ChildPath 'NSSM'
 $nssm['App'] = 'neotokyo'
 $nssm['AppDirectory'] = Join-Path -Path $steamcmd.directory -ChildPath '\steamapps\common\NEOTOKYO Dedicated Server'
 $nssm['Application'] = Join-Path -Path $nssm.AppDirectory -ChildPath 'srcds.exe'
@@ -74,14 +74,6 @@ To exit just press enter.
 }
 Function remove_steamcmd {
     Write-Host ""
-    If (Get-Service $nssm.App -ErrorAction SilentlyContinue) {
-        Set-Service neotokyo -Status Stopped
-        $command = Join-Path -Path $nssm.directory -ChildPath $nssm.filename
-        Start-Process -FilePath $command -WorkingDirectory $nssm.directory -Wait `
-                      -ArgumentList "remove", $nssm.App, "confirm"
-    } Else {
-        Write-Host "The service for", $nssm.DisplayName, "is not present."
-    }
     If (Get-Command -Name Get-NetFirewallRule -ErrorAction SilentlyContinue) {
         If (Get-NetFirewallRule -DisplayName "SteamCMD" -ErrorAction SilentlyContinue) {
             Write-Host "Removing firewall rules for SteamCMD ..."
@@ -100,8 +92,36 @@ Function remove_steamcmd {
             Write-Host "The firewall rules for SteamCMD is not present."
         }
     }
+    If (Get-Service $nssm.App -ErrorAction SilentlyContinue) {
+        Write-Host "Removing the service for", $nssm.DisplayName, "..."
+        Set-Service neotokyo -Status Stopped
+        $command = Join-Path -Path $nssm.directory -ChildPath $nssm.filename
+        Start-Process -FilePath $command -WorkingDirectory $nssm.directory -Wait `
+                      -ArgumentList "remove", $nssm.App, "confirm"
+    } Else {
+        Write-Host "The service for", $nssm.DisplayName, "is not present."
+    }
+    If (Get-Command -Name Get-NetFirewallRule -ErrorAction SilentlyContinue) {
+        If (Get-NetFirewallRule -DisplayName $nssm.DisplayName -ErrorAction SilentlyContinue) {
+            Write-Host "Removing firewall rules for", $nssm.DisplayName, "..."
+            Remove-NetFirewallRule -DisplayName $nssm.DisplayName
+        } Else {
+            Write-Host "The firewall rules for", $nssm.DisplayName, "are not present."
+        }
+    } Else {
+        [String] $Program = $nssm.Application
+        [String] $Name = $nssm.DisplayName
+        $ShowRule = netsh advfirewall firewall show rule name="$Name"
+        If ($ShowRule -match "$Name") {
+            Write-Host "Removing firewall rules for", $nssm.DisplayName, "..."
+            Start-Process "netsh" -ArgumentList ("advfirewall", "firewall", "delete", "rule", "name=`"$Name`"") -WindowStyle Hidden -Wait
+        } Else {
+            Write-Host "The firewall rules for", $nssm.DisplayName, "are not present."
+        }
+    }
     If (Test-Path -Path $steamcmd.directory) {
-        Remove-Item -Path $steamcmd.directory -Recurse
+        Write-Host "Removing", $steamcmd.directory, "..."
+        Remove-Item -Path $steamcmd.directory -Recurse -Force
     } Else {
         Write-Host "The directory for", $steamcmd.directory, "is not present."
     }
@@ -110,6 +130,7 @@ Function remove_steamcmd {
 Function remove_nssm {
     Write-Host ""
     If (Get-Service $nssm.App -ErrorAction SilentlyContinue) {
+        Write-Host "Removing the service for", $nssm.DisplayName, "..."
         Set-Service neotokyo -Status Stopped
         $command = Join-Path -Path $nssm.directory -ChildPath $nssm.filename
         Start-Process -FilePath $command -WorkingDirectory $nssm.directory -Wait `
@@ -118,7 +139,8 @@ Function remove_nssm {
         Write-Host "The service for", $nssm.DisplayName, "is not present."
     }
     If (Test-Path -Path $nssm.directory) {
-        Remove-Item -Path $nssm.directory -Recurse
+        Write-Host "Removing", $nssm.directory, "..."
+        Remove-Item -Path $nssm.directory -Recurse -Force
     } Else {
         Write-Host "The directory for", $nssm.directory, "is not present."
     }
@@ -127,10 +149,10 @@ Function remove_nssm {
 Function remove_ntds {
     Write-Host ""
     If (Get-Service $nssm.App -ErrorAction SilentlyContinue) {
+        Write-Host "Removing the service for", $nssm.DisplayName, "..."
         Set-Service neotokyo -Status Stopped
         $command = Join-Path -Path $nssm.directory -ChildPath $nssm.filename
-        Start-Process -FilePath $command `
-                      -WorkingDirectory $nssm.directory -Wait `
+        Start-Process -FilePath $command -WorkingDirectory $nssm.directory -Wait `
                       -ArgumentList "remove", $nssm.App, "confirm"
     } Else {
         Write-Host "The service for", $nssm.DisplayName, "is not present."
@@ -154,7 +176,8 @@ Function remove_ntds {
         }
     }
     If (Test-Path -Path $nssm.AppDirectory) {
-        Remove-Item -Path $nssm.AppDirectory -Recurse
+        Write-Host "Removing", $nssm.AppDirectory, "..."
+        Remove-Item -Path $nssm.AppDirectory -Recurse -Force
     } Else {
         Write-Host "The directory for", $nssm.AppDirectory, "is not present."
     }

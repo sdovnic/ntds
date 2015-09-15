@@ -50,6 +50,7 @@ and place it in the current directory."
     Write-Host "
 Copying", $nssm.filename, "($Architecture) to", $env:TEMP, "on", $remotehost
     $contents = [IO.File]::ReadAllBytes($nssm.filename)
+    $nssm['filename'] = 'nssm.exe'
     Invoke-Command -ComputerName $remotehost -Credential $credential `
                    -ScriptBlock {
                        [IO.File]::WriteAllBytes((Join-Path -Path $env:TEMP -ChildPath $using:nssm.filename), $using:contents)
