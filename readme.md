@@ -39,7 +39,7 @@ If you are not in the same Windows DOMAIN as your server, ensure that the server
 
 For Installation run the `install.cmd` script.
 
-Please be patient after you selected installing `3. NEOTOKYO Dedicated Server`, depending on your internet connection it may *take a while*.
+Please be patient after you selected installing `3. NEOTOKYO Dedicated Server`, depending on your internet connection it **may take a while**.
 
 	-- NEOTOKYO Dedicated Server Installer --
 
@@ -134,6 +134,26 @@ Please be patient after you selected installing `3. NEOTOKYO Dedicated Server`, 
 	Select number & press enter: 3
 
 	Installing NEOTOKYO Dedicated Server ...
+	Installing service for NEOTOKYO Dedicated Server ...
+	Adding firewall rules for NEOTOKYO Dedicated Server ...
+
+	1. SteamCMD - Steam Console Client
+	2. NSSM - the Non-Sucking Service Manager
+	3. NEOTOKYO Dedicated Server
+
+	9. Remove Installation
+
+	To exit just press enter.
+
+	Select number & press enter: 9
+
+	1. Remove SteamCMD - Steam Console Client
+	2. Remove NSSM - the Non-Sucking Service Manager
+	3. Remove NEOTOKYO Dedicated Server
+
+	To exit just press enter.
+
+	Select number & press enter:
 
 ## Controlling the Server
 
