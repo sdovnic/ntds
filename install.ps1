@@ -21,7 +21,9 @@ To exit just press enter.
 Function remote {
     Write-Host ""
     If ($PSVersionTable.PSVersion.Major -lt 3) {
-        Write-Host "Your Client needs a PowerShell Version greater than 2.0 for Remote Installation!"
+        Write-Warning "Your Client needs a PowerShell Version greater than 2.0 for Remote Installation!"
+        Read-Host "
+Press enter to exit"
         Break
     }
     $remotehost = Read-Host -Prompt "Please enter the full qualified domain name of your remote host"
@@ -90,7 +92,7 @@ and place it in the current directory."
 Copying", $nssm.filename, "($Architecture) to", $env:TEMP
     Copy-Item -Path $nssm.filename -Destination $env:TEMP
     Write-Host "
-Copying", $steamcmd.filename, "($Architecture) to", $env:TEMP
+Copying", $steamcmd.filename, "to", $env:TEMP
     Copy-Item -Path $steamcmd.filename -Destination $env:TEMP
     Write-Host "
 Starting local installation ...
