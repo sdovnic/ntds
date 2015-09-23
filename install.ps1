@@ -1,55 +1,54 @@
-Set-PSDebug -Strict
-Write-Host "-- NEOTOKYO Dedicated Server Installer --"
-[String] $Architecture = (Get-WmiObject Win32_OperatingSystem -ComputerName $env:COMPUTERNAME).OSArchitecture
+Write-Host -Object "-- NEOTOKYO Dedicated Server Installer --"
+[string] $Architecture = (Get-WmiObject -Class Win32_OperatingSystem -ComputerName $env:COMPUTERNAME).OSArchitecture
 $steamcmd = @{}
 $steamcmd['filename'] = 'steamcmd.exe'
 $nssm = @{}
 $nssm['filename'] = 'nssm.exe'
-Function menu {
-    Write-Host "
+function menu {
+    Write-Host -Object "
 1. Remote Installation
 2. Local Installation
 
 To exit just press enter.
 "
     $selection = Read-Host -Prompt "Select number & press enter"
-    Switch ($selection) {
+    switch ($selection) {
         "1" { remote }
         "2" { local }
     }
 }
-Function remote {
-    Write-Host ""
-    If ($PSVersionTable.PSVersion.Major -lt 3) {
-        Write-Warning "Your Client needs a PowerShell Version greater than 2.0 for Remote Installation!"
-        Read-Host "
+function remote {
+    Write-Host -Object ""
+    if ($PSVersionTable.PSVersion.Major -lt 3) {
+        Write-Warning -Message "Your Client needs a PowerShell Version greater than 2.0 for Remote Installation!"
+        Read-Host -Prompt "
 Press enter to exit"
-        Break
+        break
     }
     $remotehost = Read-Host -Prompt "Please enter the full qualified domain name of your remote host"
     $credential = Get-Credential -Message $remotehost
-    [String] $Architecture = Invoke-Command -ComputerName $remotehost -Credential $credential `
+    [string] $Architecture = Invoke-Command -ComputerName $remotehost -Credential $credential `
                                             -ScriptBlock {
-                                                (Get-WmiObject Win32_OperatingSystem -ComputerName $env:COMPUTERNAME).OSArchitecture
+                                                (Get-WmiObject -Class Win32_OperatingSystem -ComputerName $env:COMPUTERNAME).OSArchitecture
                                             }
-    If ($Architecture -notcontains "64-Bit") {
+    if ($Architecture -notcontains "64-Bit") {
         $nssm['filename'] = 'x86\nssm.exe'
     }
-    If (-Not (Test-Path $nssm.filename)) {
-        Write-Host "
+    if (-Not (Test-Path -Path $nssm.filename)) {
+        Write-Host -Object "
 The File", $nssm.filename, "is missing!
 Get the File from http://www.nssm.cc
 and place it in the current directory."
-        Break
+        break
     }
-    If (-Not (Test-Path $steamcmd.filename)) {
-        Write-Host "
+    if (-Not (Test-Path -Path $steamcmd.filename)) {
+        Write-Host -Object "
 The File", $steamcmd.filename, "is missing!
 Get the File from https://developer.valvesoftware.com/wiki/SteamCMD
 and place it in the current directory."
-        Break
+        break
     }
-    Write-Host "
+    Write-Host -Object "
 Copying", $nssm.filename, "($Architecture) to", $env:TEMP, "on", $remotehost
     $contents = [IO.File]::ReadAllBytes($nssm.filename)
     $nssm['filename'] = 'nssm.exe'
@@ -57,46 +56,46 @@ Copying", $nssm.filename, "($Architecture) to", $env:TEMP, "on", $remotehost
                    -ScriptBlock {
                        [IO.File]::WriteAllBytes((Join-Path -Path $env:TEMP -ChildPath $using:nssm.filename), $using:contents)
                    }
-    Write-Host "
+    Write-Host -Object "
 Copying", $steamcmd.filename, "to", $env:TEMP, "on", $remotehost
     $contents = [IO.File]::ReadAllBytes($steamcmd.filename)
     Invoke-Command -ComputerName $remotehost -Credential $credential `
                    -ScriptBlock {
                        [IO.File]::WriteAllBytes((Join-Path -Path $env:TEMP -ChildPath $using:steamcmd.filename), $using:contents)
                    }
-    Write-Host "
+    Write-Host -Object "
 Starting remote installation ...
 "
     Invoke-Command -ComputerName $remotehost -Credential $credential -FilePath (Join-Path -Path $PSScriptRoot -ChildPath "ntds.ps1")
 }
-Function local {
-    Write-Host ""
-    If ($Architecture -notcontains "64-Bit") {
+function local {
+    Write-Host -Object ""
+    if ($Architecture -notcontains "64-Bit") {
         $nssm['filename'] = 'x86\nssm.exe'
     }
-    If (-Not (Test-Path $nssm.filename)) {
-        Write-Host "
+    if (-Not (Test-Path -Path $nssm.filename)) {
+        Write-Host -Object "
 The File", $nssm.filename, "is missing!
 Get the File from http://www.nssm.cc
 and place it in the current directory."
-        Break
+        break
     }
-    If (-Not (Test-Path $steamcmd.filename)) {
-        Write-Host "
+    if (-Not (Test-Path -Path $steamcmd.filename)) {
+        Write-Host -Object "
 The File", $steamcmd.filename, "is missing!
 Get the File from https://developer.valvesoftware.com/wiki/SteamCMD
 and place it in the current directory."
-        Break
+        break
     }
-    Write-Host "
+    Write-Host -Object "
 Copying", $nssm.filename, "($Architecture) to", $env:TEMP
     Copy-Item -Path $nssm.filename -Destination $env:TEMP
-    Write-Host "
+    Write-Host -Object "
 Copying", $steamcmd.filename, "to", $env:TEMP
     Copy-Item -Path $steamcmd.filename -Destination $env:TEMP
-    Write-Host "
+    Write-Host -Object "
 Starting local installation ...
 "
-    Invoke-Expression "powershell -NoProfile -ExecutionPolicy Bypass .\ntds.ps1"
+    Invoke-Expression -Command "powershell -NoProfile -ExecutionPolicy Bypass .\ntds.ps1"
 }
 menu
